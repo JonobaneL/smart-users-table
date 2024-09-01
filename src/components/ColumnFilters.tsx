@@ -19,8 +19,11 @@ const ColumnFilters = () => {
       dispatch(updateColumnsFilters(newFilters));
       return;
     }
-    if (columnsFilters.includes(value) && columnsFilters.length > 1) {
-      newFilters = columnsFilters.filter((item) => item != value);
+    if (columnsFilters.includes(value)) {
+      newFilters =
+        columnsFilters.length > 1
+          ? columnsFilters.filter((item) => item != value)
+          : columnsFilters;
     } else {
       newFilters = [...columnsFilters, value];
     }
