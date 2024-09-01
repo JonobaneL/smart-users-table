@@ -1,14 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserParams } from "../types/usersTypes";
+import { UserKeys, UserParams } from "../types/usersTypes";
+import {
+  InitialUsersStateParams,
+  UpdateSearchFiltersProps,
+} from "../types/userSliceTypes";
+import { usersTableColumns } from "../data/tableConfig";
 
-type initialStateParams = {
-  isUsersLoading: boolean;
-  users: UserParams[] | null;
-};
-
-const initialState: initialStateParams = {
+const initialState: InitialUsersStateParams = {
   isUsersLoading: false,
   users: null,
+  searchFilters: {},
+  columnsFilters: usersTableColumns.map((item) => item.id),
 };
 export const fetchUsers = createAsyncThunk<UserParams[]>(
   "users/fetch-users",
@@ -36,7 +38,18 @@ export const fetchUsers = createAsyncThunk<UserParams[]>(
 const userSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+    updateSearchFilter(state, action: PayloadAction<UpdateSearchFiltersProps>) {
+      const { key, value } = action.payload;
+      return {
+        ...state,
+        searchFilters: { ...state.searchFilters, [key]: value },
+      };
+    },
+    updateColumnsFilters(state, action: PayloadAction<UserKeys[]>) {
+      state.columnsFilters = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
@@ -51,5 +64,6 @@ const userSlice = createSlice({
       );
   },
 });
+export const { updateSearchFilter, updateColumnsFilters } = userSlice.actions;
 
 export default userSlice.reducer;

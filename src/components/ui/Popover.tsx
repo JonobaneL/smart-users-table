@@ -1,8 +1,13 @@
 import { useRef, useState } from "react";
 import { useEventListener } from "../../hooks/useEventListener";
+import { cn } from "../../lib/ustils";
 
 type PopoverProps = {
   children: React.ReactNode[];
+};
+type PopoverContentProps = {
+  children: React.ReactNode;
+  className?: string;
 };
 
 const Popover = ({ children }: PopoverProps) => {
@@ -13,28 +18,34 @@ const Popover = ({ children }: PopoverProps) => {
       setVisible(false);
     }
   };
-  useEventListener("click", onBlur);
+  useEventListener("mousedown", onBlur);
 
   return (
-    <div className="relative h-fit w-fit">
+    <div ref={contentRef} className="relative h-fit w-fit">
       <div
-        onClick={(e) => {
-          e.stopPropagation();
+        className="flex items-center w-fit h-fit"
+        onClick={() => {
           setVisible((p) => !p);
         }}
       >
         {children[0]}
       </div>
-      {isVisible && (
-        <div
-          ref={contentRef}
-          className="absolute z-50 w-64 right-0  bg-white rounded-md shadow-md p-2"
-        >
-          {children[1]}
-        </div>
-      )}
+      {isVisible && children[1]}
     </div>
   );
 };
 
-export default Popover;
+const PopoverContent = ({ children, className = "" }: PopoverContentProps) => {
+  return (
+    <div
+      className={cn(
+        "absolute z-50 w-64 right-0 bg-white rounded-md shadow-md p-2",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+export { Popover, PopoverContent };

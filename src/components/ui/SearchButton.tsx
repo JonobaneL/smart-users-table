@@ -1,12 +1,10 @@
 type SearchButtonProps = {
   active: boolean;
-  callback: () => void;
 };
 
-const SearchButton = ({ active, callback }: SearchButtonProps) => {
+const SearchButton = ({ active }: SearchButtonProps) => {
   return (
     <button
-      onClick={callback}
       className={`w-fit h-fit rounded-sm hover:bg-gray-100 ${
         active ? "bg-gray-100" : "bg-transparent"
       }`}

@@ -1,3 +1,5 @@
+import { usersTableConfig } from "../data/tableConfig";
+import { useTable } from "../hooks/useTable";
 import { useTypedSelector } from "../hooks/useTypedReduxHooks";
 import {
   Table,
@@ -7,40 +9,37 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/Table";
-import UsersTableHead from "./UserTableHead";
 
-type UsersTableProps = {};
+const UsersTable = () => {
+  const { users, searchFilters, columnsFilters } = useTypedSelector(
+    (state) => state.usersReducer
+  );
+  const table = useTable(users, usersTableConfig, {
+    searchOptions: searchFilters,
+    columnsVisibility: columnsFilters,
+  });
 
-const UsersTable = ({}: UsersTableProps) => {
-  const { users } = useTypedSelector((state) => state.usersReducer);
-  const columns = [
-    { key: "name", name: "Full Name" },
-    { key: "username", name: "Username" },
-    { key: "email", name: "Email address" },
-    { key: "phone", name: "Phone" },
-  ];
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((item) => (
-              <UsersTableHead key={item.key} head={item.name} />
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {table.headers.map((header) => (
+            <TableHead key={header.accessKey}>{header.value}</TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {table.rows?.map((row, row_index) => (
+          <TableRow key={row_index}>
+            {row.map((cell) => (
+              <TableCell className="text-sm" key={cell.accessKey}>
+                {cell.value}
+              </TableCell>
             ))}
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users?.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="text-sm">{item.name}</TableCell>
-              <TableCell className="text-sm">{item.username}</TableCell>
-              <TableCell className="text-sm">{item.email}</TableCell>
-              <TableCell className="text-sm">{item.phone}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 

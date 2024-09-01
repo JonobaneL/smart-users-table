@@ -12,7 +12,6 @@ export const useEventListener = (
   }, [callback]);
 
   useEffect(() => {
-    console.log("changed");
     const handler = (e: Event) => callbackRef.current(e);
     if (element) {
       element.addEventListener(eventType, handler);
